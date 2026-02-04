@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop-up de Mensagem</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="button-container">
+            <button class="load-btn" onclick="carregarMensagem()">Carregar Mensagem</button>
+        </div>
+        <div class="info-text">Clique no botão acima para abrir o pop-up</div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="popup" id="popup">
+        <div class="popup-title" id="popupTitle">Carregando...</div>
+        <div class="popup-message" id="popupMessage">Aguarde um momento...</div>
+        <div class="popup-description" id="popupDescription"></div>
+        <div class="popup-buttons">
+            <button class="popup-btn btn-close" onclick="fecharPopup()">Fechar</button>
+            <button class="popup-btn btn-confirm" onclick="confirmarPopup()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        async function carregarMensagem() {
+            try {
+                const response = await fetch('/');
+                const data = await response.json();
+
+                document.getElementById('popupTitle').textContent = data.titulo;
+                document.getElementById('popupMessage').textContent = data.mensagem;
+                document.getElementById('popupDescription').textContent = data.descricao;
+
+                abrirPopup();
+            } catch (error) {
+                console.error('Erro ao carregar mensagem:', error);
+                document.getElementById('popupTitle').textContent = 'Olá!';
+                document.getElementById('popupMessage').textContent = 'O sistema está funcionando.';
+                abrirPopup();
+            }
+        }
+
+        function abrirPopup() {
+            document.getElementById('popup').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function fecharPopup() {
+            document.getElementById('popup').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function confirmarPopup() {
+            fecharPopup();
+        }
+
+        document.getElementById('overlay').addEventListener('click', fecharPopup);
+    </script>
+</body>
+</html>
